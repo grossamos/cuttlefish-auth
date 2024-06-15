@@ -1,8 +1,6 @@
-package handlers
+package main
 
 import (
-	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 
@@ -10,35 +8,35 @@ import (
 	"github.com/gorilla/websocket"
 )
 
-
-func RegisterDevice(ctx *gin.Context)  {
-  var msgContainer mesageTypeContainer
-  
+func WSHandler(ctx *gin.Context)  {
   conn, err := upgrader.Upgrade(ctx.Writer, ctx.Request, nil)
 	if err != nil {
 		log.Println("Failed to upgrade to WebSocket:", err)
 		return
   }
 
+  defer conn.Close()
+
   for {
     _, message, err := conn.ReadMessage()
-		if err != nil {
-			log.Println("Read error:", err)
-			break
-		}
+    if err != nil {
+      log.Println("Read error:", err)
+      break
+    }
 
-    err = json.Unmarshal(message, &msgContainer)
-		if err != nil {
-      log.Println("Unable to unmarshal json:", err)
-			break
-		}
+    response, err := HandleSignaling(DEVICE_PARTNER, string(message))
+    if err != nil {
+      break
+    }
 
-    fmt.Println(msgContainer.MessageType, message)
-    break
-
+    err = conn.WriteMessage(websocket.TextMessage, []byte(response))
+    if err != nil {
+      log.Println("Error writing response:", err)
+      break
+    }
   }
-
 }
+
 
 type mesageTypeContainer struct {
   MessageType string `json:"message_type"`

@@ -2,7 +2,6 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/grossamos/cuttlefish-auth/handlers"
 )
 
 func heathCheck(c *gin.Context) {
@@ -14,13 +13,17 @@ func heathCheck(c *gin.Context) {
 
 func main() {
 	r := gin.Default()
-	r.GET("/", heathCheck)
-	r.GET("/register_device", handlers.RegisterDevice)
-
+	r.StaticFile("/", "./webui/index.html")
+	r.StaticFile("/index.css", "./webui/index.css")
+	r.StaticFile("/style.css", "./webui/style.css")
+  r.Static("/js/", "./webui/js/")
+	r.GET("/register_device", WSHandler)
+	r.GET("/connect_client", WSHandler)
 	r.GET("/frontend", func(c *gin.Context) {
 		c.HTML(200, "index.html", nil)
 	})
 
 	r.SetTrustedProxies([]string{})
-	r.Run()
+  r.RunTLS("0.0.0.0:8443", "/tmp/ca/certificate.pem", "/tmp/ca/privatekey.pem")
+  // r.Run("0.0.0.0:7443")
 }

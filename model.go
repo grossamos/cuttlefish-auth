@@ -1,4 +1,4 @@
-package model
+package main
 
 type RegisterMessage struct {
 	MessageType string      `json:"message_type"`
@@ -11,3 +11,16 @@ type ForwardMessage struct {
 	ClientID    int         `json:"client_id"`
 	Payload     interface{} `json:"payload"`
 }
+
+type ConfigMessage struct {
+	MessageType string            `json:"message_type"`
+  IceServers  []map[string]string `json:"ice_servers"`
+}
+
+func NewConfigMessage(iceServers []map[string]string) ConfigMessage {
+  return ConfigMessage{
+    MessageType: "config",
+    IceServers: iceServers,
+  }
+}
+
