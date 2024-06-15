@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"log"
 	"net/http"
 
@@ -8,7 +9,7 @@ import (
 	"github.com/gorilla/websocket"
 )
 
-func WSHandler(ctx *gin.Context)  {
+func WSHandler(ctx *gin.Context, deviceRegistry []string)  {
   conn, err := upgrader.Upgrade(ctx.Writer, ctx.Request, nil)
 	if err != nil {
 		log.Println("Failed to upgrade to WebSocket:", err)
@@ -18,15 +19,26 @@ func WSHandler(ctx *gin.Context)  {
   defer conn.Close()
 
   for {
+    var msgTypeContainer mesageTypeContainer
+    var response string
+
     _, message, err := conn.ReadMessage()
     if err != nil {
       log.Println("Read error:", err)
       break
     }
 
-    response, err := HandleSignaling(DEVICE_PARTNER, string(message))
+    err = json.Unmarshal(message, &msgTypeContainer)
     if err != nil {
+      log.Println("Error unmarshaling incoming json: ", err)
       break
+    }
+
+    if msgTypeContainer.MessageType == REGISTER_MESSAGE_TYPE || msgTypeContainer.MessageType == CONNECT_MESSAGE_TYPE {
+      response, err = HandleSignaling(DEVICE_PARTNER, string(message))
+      if err != nil {
+        break
+      }
     }
 
     err = conn.WriteMessage(websocket.TextMessage, []byte(response))

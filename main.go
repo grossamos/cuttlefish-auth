@@ -12,16 +12,19 @@ func heathCheck(c *gin.Context) {
 }
 
 func main() {
+  var deviceRegistry []string
+  WSHandlerWrapper := func (c *gin.Context)  {
+    WSHandler(c, deviceRegistry)
+  }
+
+
 	r := gin.Default()
 	r.StaticFile("/", "./webui/index.html")
 	r.StaticFile("/index.css", "./webui/index.css")
 	r.StaticFile("/style.css", "./webui/style.css")
   r.Static("/js/", "./webui/js/")
-	r.GET("/register_device", WSHandler)
-	r.GET("/connect_client", WSHandler)
-	r.GET("/frontend", func(c *gin.Context) {
-		c.HTML(200, "index.html", nil)
-	})
+	r.GET("/register_device", WSHandlerWrapper)
+	r.GET("/connect_client", WSHandlerWrapper)
 
 	r.SetTrustedProxies([]string{})
   r.RunTLS("0.0.0.0:8443", "/tmp/ca/certificate.pem", "/tmp/ca/privatekey.pem")
