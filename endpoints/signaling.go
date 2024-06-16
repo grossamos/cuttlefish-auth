@@ -116,7 +116,7 @@ func ForwardMessageFromSender(dataBank *map[string]models.DataBankEntry, message
 
   err := json.Unmarshal([]byte(message), &fwdMsg)
   if err != nil {
-    log.Println("Unable to unmarshal connect json:", err)
+    log.Println("Unable to unmarshal forward json:", err)
     return err
   }
 
@@ -140,6 +140,14 @@ func ForwardMessageFromSender(dataBank *map[string]models.DataBankEntry, message
     }
     responseObj = models.DeviceMessage{MessageType: "device_msg", DeviceID: deviceId, Payload: fwdMsg.Payload}
 
+    var fwdMsgDev models.ForwardMessageFromDevice
+    err = json.Unmarshal([]byte(message), &fwdMsgDev)
+    if err != nil {
+      log.Println("Unable to unmarshal forward json from device:", err)
+      return err
+    }
+
+    recipient = (*dataBank)[deviceId].Clients[fwdMsgDev.ClientID]
   }
 
   response, err := json.Marshal(responseObj)

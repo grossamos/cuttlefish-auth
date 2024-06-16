@@ -11,14 +11,20 @@ type ForwardMessage struct {
 	Payload     interface{} `json:"payload"`
 }
 
+type ForwardMessageFromDevice struct {
+	MessageType string      `json:"message_type"`
+	ClientID    uint        `json:"client_id"`
+	Payload     interface{} `json:"payload"`
+}
+
 type ClientMessage struct {
-	MessageType string `json:"message_type"`
-	ClientID    uint   `json:"client_id"`
+	MessageType string      `json:"message_type"`
+	ClientID    uint        `json:"client_id"`
 	Payload     interface{} `json:"payload"`
 }
 
 type DeviceMessage struct {
-	MessageType string `json:"message_type"`
+	MessageType string      `json:"message_type"`
 	DeviceID    string      `json:"device_id"`
 	Payload     interface{} `json:"payload"`
 }
@@ -29,7 +35,7 @@ type DeviceInfoMessage struct {
 }
 
 type ConfigMessage struct {
-	MessageType string              `json:"message_type"`
+	MessageType string                `json:"message_type"`
 	IceServers  []map[string][]string `json:"ice_servers"`
 }
 
@@ -47,8 +53,8 @@ type DataBankEntry struct {
 }
 
 type Client struct {
-  Ch chan ChannelMessage
-  ClientId uint
+	Ch       chan ChannelMessage
+	ClientId uint
 }
 
 type ChannelMessage struct {
