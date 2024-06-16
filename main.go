@@ -35,6 +35,8 @@ func main() {
 	r := gin.Default()
 	r.StaticFile("/", "./webui/index.html")
 	r.StaticFile("/index.css", "./webui/index.css")
+	r.StaticFile("/client.html", "./webui/client.html")
+	r.StaticFile("/controls.css", "./webui/controls.css")
 	r.StaticFile("/style.css", "./webui/style.css")
   r.Static("/js/", "./webui/js/")
 	r.GET("/register_device", WSHandlerWrapperDevice)
