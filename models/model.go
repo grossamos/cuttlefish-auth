@@ -30,10 +30,10 @@ type DeviceInfoMessage struct {
 
 type ConfigMessage struct {
 	MessageType string              `json:"message_type"`
-	IceServers  []map[string]string `json:"ice_servers"`
+	IceServers  []map[string][]string `json:"ice_servers"`
 }
 
-func NewConfigMessage(iceServers []map[string]string) ConfigMessage {
+func NewConfigMessage(iceServers []map[string][]string) ConfigMessage {
 	return ConfigMessage{
 		MessageType: "config",
 		IceServers:  iceServers,

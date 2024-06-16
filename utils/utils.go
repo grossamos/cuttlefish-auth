@@ -11,8 +11,10 @@ const DEVICE_PARTNER string = "device_partner"
 const CLIENT_PARTNER string = "client_partner"
 
 func CreateGoogleStunSignalingConfigMessage() models.ConfigMessage {
-  configMsg := models.NewConfigMessage([]map[string]string{
-		{"url": GOOGLE_STUN_SERVER},
+  urls := make([]string, 1)
+  urls[0] = GOOGLE_STUN_SERVER
+  configMsg := models.NewConfigMessage([]map[string][]string{
+		{"urls": urls},
 	})
 	return configMsg
 }
@@ -39,7 +41,7 @@ func GetDeviceOfChannel(databank *map[string]models.DataBankEntry, ch chan model
 
 func GetDeviceOfClient(databank *map[string]models.DataBankEntry, clientID uint) (string, error) {
   for deviceId, entry := range *databank {
-    for id, _ := range entry.Clients {
+    for id := range entry.Clients {
       if id == clientID {
         return deviceId, nil
       }
