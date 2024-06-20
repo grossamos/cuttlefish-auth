@@ -35,6 +35,9 @@ func HandleRegistration(message string, dataBank *map[string]models.DataBankEntr
       return "", errors.New("Client connected before device")
     }
     id := uint(len(deviceDataBankEntry.Clients))
+    if id > 1 {
+      return "", errors.New("Connecting to reserved device")
+    }
     deviceDataBankEntry.Clients[id] = ch
     (*dataBank)[deviceID] = deviceDataBankEntry
   }
