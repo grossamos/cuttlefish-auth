@@ -161,9 +161,10 @@ const kPollForwardUrl = httpUrl('forward');
 const kPollMessagesUrl = httpUrl('poll_messages');
 
 async function connectWs() {
+  const authToken = localStorage.getItem('authToken')
   return new Promise((resolve, reject) => {
     let url = websocketUrl('connect_client');
-    let ws = new WebSocket(url);
+    let ws = new WebSocket(url + `?token=${authToken}`);
     ws.onopen = () => {
       resolve(ws);
     };
@@ -174,11 +175,15 @@ async function connectWs() {
 }
 
 async function ajaxPostJson(url, data) {
+  const authToken = localStorage.getItem('authToken')
   const response = await fetch(url, {
     method: 'POST',
     cache: 'no-cache',
-    headers: {'Content-Type': 'application/json'},
     redirect: 'follow',
+    headers: {
+      'Authorization': `Bearer ${authToken}`,
+      'Content-Type': 'application/json',
+    },
     body: JSON.stringify(data),
   });
   return response.json();

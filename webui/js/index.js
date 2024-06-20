@@ -35,8 +35,9 @@ class DeviceListApp {
   }
 
   async #UpdateDeviceList() {
+    const authToken = localStorage.getItem('authToken')
     try {
-      const device_ids = await fetch(this.#url, {
+      const device_ids = await fetch(this.#url + `?token=${authToken}`, {
         method: 'GET',
         cache: 'no-cache',
         redirect: 'follow',
@@ -98,3 +99,10 @@ window.addEventListener('load', e => {
   let deviceListApp = new DeviceListApp({url: listDevicesUrl, selectDeviceCb});
   deviceListApp.start();
 });
+
+
+const authToken = localStorage.getItem('authToken')
+console.log(authToken)
+if (!authToken) {
+  window.location.href = '/login.html';
+}

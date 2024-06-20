@@ -1,0 +1,6 @@
+{
+  "users": {
+    "myuser": "123"
+  },
+  "jwt-Key": "my-secret"
+}
