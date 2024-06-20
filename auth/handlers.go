@@ -3,6 +3,7 @@ package auth
 import (
 	"encoding/base64"
 	"fmt"
+	"net"
 	"net/http"
 	"strings"
 
@@ -47,4 +48,22 @@ func GetLoginHandler(jwtState JwtState) gin.HandlerFunc {
 
     ctx.JSON(http.StatusOK, gin.H{"token": token})
   }
+}
+
+func OnlyLocalhost() gin.HandlerFunc {
+    return func(c *gin.Context) {
+        clientIP := c.ClientIP()
+        if !isLocalhost(clientIP) {
+            c.AbortWithStatusJSON(http.StatusForbidden, gin.H{"error": "Access denied"})
+            return
+        }
+        c.Next()
+    }
+}
+
+func isLocalhost(ip string) bool {
+    if strings.Contains(ip, ":") {
+        ip, _, _ = net.SplitHostPort(ip)
+    }
+    return ip == "127.0.0.1" || ip == "::1"
 }

@@ -8,13 +8,6 @@ import (
 	"github.com/grossamos/cuttlefish-auth/utils"
 )
 
-func heathCheck(c *gin.Context) {
-	c.JSON(200, gin.H{
-		"status": "healthy",
-		"about":  "this is a signaling server for cuttlefish",
-	})
-}
-
 func wrapperFunction(deviceRegistry *map[string]models.DataBankEntry, communicationPartner string) gin.HandlerFunc {
   return func (c *gin.Context) {
     endpoints.WSHandler(c, deviceRegistry, communicationPartner)
@@ -48,7 +41,7 @@ func main() {
   r.POST("/login", auth.GetGinBasicAuth(), loginHandler)
   r.GET("/register_device", WSHandlerWrapperDevice)
   r.GET("/connect_client", authMiddleware, WSHandlerWrapperClient)
-  r.GET("/devices", authMiddleware, deviceHandkerWraooer)
+  r.GET("/devices", authMiddleware, auth.OnlyLocalhost(), deviceHandkerWraooer)
 
 	r.SetTrustedProxies([]string{})
   r.RunTLS("0.0.0.0:8443", "./certs/server.crt", "./certs/server.key")
