@@ -37,10 +37,6 @@ func main() {
 
 
 	r := gin.Default()
-  authorized := r.Group("/api")
-  authorized.Use(authMiddleware)
-  {
-  }
 	r.StaticFile("/", "./webui/index.html")
 	r.StaticFile("/index.css", "./webui/index.css")
 	r.StaticFile("/login.css", "./webui/login.css")
@@ -50,7 +46,7 @@ func main() {
 	r.StaticFile("/style.css", "./webui/style.css")
   r.Static("/js/", "./webui/js/")
   r.POST("/login", auth.GetGinBasicAuth(), loginHandler)
-  r.GET("/register_device", authMiddleware, WSHandlerWrapperDevice)
+  r.GET("/register_device", WSHandlerWrapperDevice)
   r.GET("/connect_client", authMiddleware, WSHandlerWrapperClient)
   r.GET("/devices", authMiddleware, deviceHandkerWraooer)
 
